@@ -9,7 +9,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient; // ★ここが変更点
 
 import com.udemy.spring3item.model.HelloMessage;
 import com.udemy.spring3item.model.Item;
@@ -21,10 +21,10 @@ public class ItemService {
 	@Autowired
 	private ItemRepository itemRepository;
 	
-	private RestTemplate restTemplate;
+	private final RestClient restClient;
 	
-	public ItemService (RestTemplateBuilder restTemplateBuilder) {
-		this.restTemplate = restTemplateBuilder.build();
+	public ItemService() {
+		this.restClient = RestClient.create();
 	}
 	
 	/*
@@ -88,11 +88,16 @@ public class ItemService {
 	}
 	
 	public HelloMessage getHelloResponse() {
-		String URL = "http://localhost:8080/hello";
-		String hello = restTemplate.getForObject(URL, String.class);
-		
-		HelloMessage retHello = new HelloMessage(hello);
-		
-		return retHello;
+        String URL = "http://localhost:8081/hello";
+ 
+        // ★変更点3: RestClientのFluent APIを使用してリクエスト
+        String hello = restClient.get()
+                .uri(URL)
+                .retrieve()
+                .body(String.class);
+ 
+        HelloMessage retHello = new HelloMessage(hello);
+ 
+        return retHello;
 	}
 }

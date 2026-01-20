@@ -28,7 +28,7 @@ class ItemControllerTest {
 		int itemId = 1;
 		String responseJsonString = mvc.perform(get("/items/{itemId}",itemId)
 				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE) //非推奨ではあるが
+				.accept(MediaType.APPLICATION_JSON) //非推奨ではあるが
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk()) //ステータスコードのチェック
 				.andReturn().getResponse().getContentAsString();
